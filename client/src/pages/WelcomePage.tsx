@@ -23,16 +23,9 @@ const WelcomePage: React.FC = () => {
     if (isAuthenticated) {
       setLocation('/home');
     }
-
-    // Check if user already has a wallet
-    const checkExistingWallet = async () => {
-      const exists = await checkWalletExists();
-      if (exists) {
-        setLocation('/home');
-      }
-    };
-
-    checkExistingWallet();
+    
+    // Don't check for existing wallet anymore - let user choose to create/import
+    // This ensures they can always see the welcome page first
   }, [isAuthenticated, setLocation]);
 
   const renderScreen = () => {
