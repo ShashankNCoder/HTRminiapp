@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useWallet } from '@/context/WalletContext';
 import { useToast } from '@/hooks/use-toast';
+import { useLocation } from 'wouter';
 
 interface CreateWalletProps {
   onBack: () => void;
@@ -12,10 +13,15 @@ const CreateWallet: React.FC<CreateWalletProps> = ({ onBack }) => {
   const [pin, setPin] = useState('');
   const { createWallet } = useWallet();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const handleCreateWallet = async () => {
     try {
-      await createWallet(pin);
+      const result = await createWallet(pin);
+      // If wallet creation is successful, redirect to home page
+      if (result?.success) {
+        setLocation('/home');
+      }
     } catch (error) {
       toast({
         variant: "destructive",

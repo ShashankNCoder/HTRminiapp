@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useWallet } from '@/context/WalletContext';
 import { useToast } from '@/hooks/use-toast';
+import { useLocation } from 'wouter';
 
 interface ImportWalletProps {
   onBack: () => void;
@@ -14,6 +15,7 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ onBack }) => {
   const [pin, setPin] = useState('');
   const { importWallet } = useWallet();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const handleImportWallet = async () => {
     if (!seedPhrase || seedPhrase.trim() === '') {
@@ -26,7 +28,11 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ onBack }) => {
     }
 
     try {
-      await importWallet(seedPhrase, pin);
+      const result = await importWallet(seedPhrase, pin);
+      // If wallet import is successful, redirect to home page
+      if (result?.success) {
+        setLocation('/home');
+      }
     } catch (error) {
       toast({
         variant: "destructive",

@@ -9,8 +9,8 @@ interface WalletContextType {
   } | null;
   isAuthenticated: boolean;
   isCreating: boolean;
-  createWallet: (pin?: string) => Promise<void>;
-  importWallet: (seedPhrase: string, pin?: string) => Promise<void>;
+  createWallet: (pin?: string) => Promise<{ success: boolean } | undefined>;
+  importWallet: (seedPhrase: string, pin?: string) => Promise<{ success: boolean } | undefined>;
   logout: () => void;
 }
 
@@ -18,8 +18,8 @@ const WalletContext = createContext<WalletContextType>({
   wallet: null,
   isAuthenticated: false,
   isCreating: false,
-  createWallet: async () => {},
-  importWallet: async () => {},
+  createWallet: async () => ({ success: false }),
+  importWallet: async () => ({ success: false }),
   logout: () => {},
 });
 
@@ -56,7 +56,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     checkAuth();
   }, []);
 
-  const createWallet = async (pin?: string) => {
+  const createWallet = async (pin?: string): Promise<{ success: boolean } | undefined> => {
     setIsCreating(true);
     try {
       const result = await createWalletAPI(pin);
@@ -67,6 +67,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
           title: "Success",
           description: "Wallet created successfully!",
         });
+        return { success: true };
       } else {
         // Use mock wallet for demonstration when API fails
         console.log("Using mock wallet address for demonstration");
@@ -76,6 +77,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
           title: "Success",
           description: "Wallet created successfully! (Demo mode)",
         });
+        return { success: true };
       }
     } catch (error) {
       console.error('Error creating wallet:', error);
@@ -87,12 +89,13 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         title: "Success",
         description: "Wallet created successfully! (Demo mode)",
       });
+      return { success: true };
     } finally {
       setIsCreating(false);
     }
   };
 
-  const importWallet = async (seedPhrase: string, pin?: string) => {
+  const importWallet = async (seedPhrase: string, pin?: string): Promise<{ success: boolean } | undefined> => {
     setIsCreating(true);
     try {
       const result = await importWalletAPI(seedPhrase, pin);
@@ -103,6 +106,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
           title: "Success",
           description: "Wallet imported successfully!",
         });
+        return { success: true };
       } else {
         // Use mock wallet for demonstration when API fails
         console.log("Using mock wallet address for demonstration");
@@ -112,6 +116,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
           title: "Success", 
           description: "Wallet imported successfully! (Demo mode)",
         });
+        return { success: true };
       }
     } catch (error) {
       console.error('Error importing wallet:', error);
@@ -123,6 +128,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
         title: "Success",
         description: "Wallet imported successfully! (Demo mode)",
       });
+      return { success: true };
     } finally {
       setIsCreating(false);
     }
