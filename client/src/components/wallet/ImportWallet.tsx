@@ -18,7 +18,10 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ onBack }) => {
   const [, setLocation] = useLocation();
 
   const handleImportWallet = async () => {
+    console.log("Import wallet button clicked");
+    
     if (!seedPhrase || seedPhrase.trim() === '') {
+      console.log("No seed phrase provided");
       toast({
         variant: "destructive",
         title: "Error",
@@ -27,13 +30,26 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ onBack }) => {
       return;
     }
 
+    console.log("Importing wallet with seed phrase length:", seedPhrase.length);
     try {
+      console.log("Calling importWallet function...");
       const result = await importWallet(seedPhrase, pin);
+      console.log("Import wallet result:", result);
+      
       // If wallet import is successful, redirect to home page
       if (result?.success) {
+        console.log("Wallet import successful, navigating to /home");
         setLocation('/home');
+      } else {
+        console.log("Wallet import failed:", result);
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to import wallet. Please check your seed phrase and try again."
+        });
       }
     } catch (error) {
+      console.error("Exception in handleImportWallet:", error);
       toast({
         variant: "destructive",
         title: "Error",
