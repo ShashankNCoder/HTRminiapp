@@ -14,9 +14,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // For now, we'll use a mock ID
       const telegramId = req.query.telegram_id || "123456789";
       
-      // Simulate that a wallet exists for demo
-      // In a real implementation, we'd query the database
+      // TEMPORARILY FORCE false for testing wallet creation flow
+      res.json({
+        exists: false,
+        address: ""
+      });
+      return;
       
+      // The below code is temporarily disabled to force showing the create/import screens
+      /*
       if (process.env.DEMO_MODE === 'true') {
         res.json({
           exists: true,
@@ -31,6 +37,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         exists: !!wallet,
         address: wallet?.address
       });
+      */
     } catch (error) {
       console.error("Error checking wallet existence:", error);
       res.status(500).json({
