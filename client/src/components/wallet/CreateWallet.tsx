@@ -17,16 +17,26 @@ const CreateWallet: React.FC<CreateWalletProps> = ({ onBack }) => {
 
   const handleCreateWallet = async () => {
     console.log("Creating wallet with PIN:", pin ? "PIN provided" : "No PIN");
-    // Show creating screen for a brief moment
-    createWallet(pin);
-    // Skip validation and directly go to home page after a brief delay
+    
+    // First show toast notification
     toast({
       title: "Success",
       description: "Wallet created successfully!",
     });
-    setTimeout(() => {
-      setLocation('/home');
-    }, 1000);
+    
+    try {
+      // Call createWallet and wait for the promise to resolve
+      const result = await createWallet(pin);
+      console.log("Wallet creation complete, navigating to home page");
+      
+      // Use a longer timeout to ensure state changes are processed
+      setTimeout(() => {
+        window.history.pushState({}, '', '/home');
+        setLocation('/home');
+      }, 2000);
+    } catch (error) {
+      console.error("Error in handleCreateWallet:", error);
+    }
   };
 
   return (

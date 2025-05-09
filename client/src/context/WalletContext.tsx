@@ -60,34 +60,38 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
     console.log("WalletContext: createWallet called with PIN:", pin ? "PIN provided" : "No PIN");
     setIsCreating(true);
     
-    // Skip API call to avoid errors and just use mock data
-    console.log("WalletContext: Using mock wallet address for demonstration");
-    setWallet({ address: MOCK_WALLET_ADDRESS });
-    setIsAuthenticated(true);
-    
-    // Brief delay to show the loading screen
-    setTimeout(() => {
-      setIsCreating(false);
-    }, 1000);
-    
-    return { success: true };
+    // Wrap in a promise to ensure we can await state updates
+    return new Promise((resolve) => {
+      // Skip API call to avoid errors and just use mock data
+      console.log("WalletContext: Using mock wallet address for demonstration");
+      setWallet({ address: MOCK_WALLET_ADDRESS });
+      setIsAuthenticated(true);
+      
+      // Brief delay to show the loading screen, then resolve the promise
+      setTimeout(() => {
+        setIsCreating(false);
+        resolve({ success: true });
+      }, 1500);
+    });
   };
 
   const importWallet = async (seedPhrase: string, pin?: string): Promise<{ success: boolean } | undefined> => {
     console.log("WalletContext: importWallet called with seed phrase length:", seedPhrase?.length || 0);
     setIsCreating(true);
     
-    // Skip API call to avoid errors and just use mock data
-    console.log("WalletContext: Using mock wallet address for import demonstration");
-    setWallet({ address: MOCK_WALLET_ADDRESS });
-    setIsAuthenticated(true);
-    
-    // Brief delay to show the loading screen
-    setTimeout(() => {
-      setIsCreating(false);
-    }, 1000);
-    
-    return { success: true };
+    // Wrap in a promise to ensure we can await state updates
+    return new Promise((resolve) => {
+      // Skip API call to avoid errors and just use mock data
+      console.log("WalletContext: Using mock wallet address for import demonstration");
+      setWallet({ address: MOCK_WALLET_ADDRESS });
+      setIsAuthenticated(true);
+      
+      // Brief delay to show the loading screen, then resolve the promise
+      setTimeout(() => {
+        setIsCreating(false);
+        resolve({ success: true });
+      }, 1500);
+    });
   };
 
   const logout = () => {

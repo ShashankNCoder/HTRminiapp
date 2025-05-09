@@ -30,19 +30,25 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ onBack }) => {
       return;
     }
 
-    // Just show brief loading then go directly to home page
-    importWallet(seedPhrase, pin);
-    
     // Display success message
     toast({
       title: "Success",
       description: "Wallet imported successfully!",
     });
     
-    // Navigate to home page after a short delay
-    setTimeout(() => {
-      setLocation('/home');
-    }, 1000);
+    try {
+      // Call importWallet and await the result
+      const result = await importWallet(seedPhrase, pin);
+      console.log("Wallet import complete, navigating to home page");
+      
+      // Use a longer timeout to ensure state changes are processed
+      setTimeout(() => {
+        window.history.pushState({}, '', '/home');
+        setLocation('/home');
+      }, 2000);
+    } catch (error) {
+      console.error("Error in handleImportWallet:", error);
+    }
   };
 
   return (

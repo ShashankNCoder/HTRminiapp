@@ -15,8 +15,14 @@ function Router() {
   const { isAuthenticated } = useWallet();
   const [location, setLocation] = useLocation();
 
+  // Enhanced routing logic to better handle authentication state
   useEffect(() => {
+    console.log("Router: Authentication state changed:", isAuthenticated, "Current location:", location);
+    
     if (isAuthenticated && location === "/") {
+      console.log("Router: User is authenticated and at root, redirecting to /home");
+      // Use both methods to ensure navigation works
+      window.history.pushState({}, '', '/home');
       setLocation("/home");
     }
   }, [isAuthenticated, location, setLocation]);
