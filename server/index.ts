@@ -2,8 +2,8 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
-// Set demo mode flag for development
-process.env.DEMO_MODE = process.env.DEMO_MODE || 'true';
+// Set demo mode flag for development - currently turned off to allow wallet creation testing
+process.env.DEMO_MODE = process.env.DEMO_MODE || 'false';
 
 const app = express();
 app.use(express.json());
