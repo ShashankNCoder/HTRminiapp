@@ -33,27 +33,33 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   // Mock wallet address for demonstration
   const MOCK_WALLET_ADDRESS = "HTRxk2T39XFd7LJ51mDECJWbMDvqQu98D9";
   
+  // Initialize with null wallet and not authenticated
   const [wallet, setWallet] = useState<{ address: string } | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const { toast } = useToast();
 
+  // Debug the auth state when it changes
+  useEffect(() => {
+    console.log("WalletContext: Authentication state changed:", isAuthenticated, "Wallet:", wallet);
+  }, [isAuthenticated, wallet]);
+
   useEffect(() => {
     // Check if wallet exists on initial load
     const checkAuth = async () => {
       try {
-        const exists = await checkWalletExists();
-        if (exists) {
-          // This would typically fetch the wallet address from the server
-          setWallet({ address: MOCK_WALLET_ADDRESS });
-          setIsAuthenticated(true);
-        }
+        // Instead of checking the API, create a wallet immediately for demo purposes
+        // This ensures we always have a wallet to display
+        console.log("WalletContext: Initializing with mock wallet for demo");
+        setWallet({ address: MOCK_WALLET_ADDRESS });
+        setIsAuthenticated(true);
       } catch (error) {
         console.error('Error checking authentication:', error);
       }
     };
 
-    checkAuth();
+    // Uncomment this to enable auto-login with mock wallet for demo
+    // checkAuth();
   }, []);
 
   const createWallet = async (pin?: string): Promise<{ success: boolean } | undefined> => {

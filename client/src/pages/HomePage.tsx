@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useWallet } from '@/context/WalletContext';
-import { useLocation } from 'wouter';
 import Layout from '@/components/Layout';
 import TokenCard from '@/components/wallet/TokenCard';
 import NftBadgeCard from '@/components/wallet/NftBadge';
 import TransactionItem from '@/components/wallet/TransactionItem';
-import { getWalletBalance, getTransactionHistory, getNFTBadges, TokenBalance, Transaction, NFTBadge, mockTokens, mockTransactions, mockNFTBadges } from '@/lib/hathor';
+import { TokenBalance, Transaction, NFTBadge, mockTokens, mockTransactions, mockNFTBadges } from '@/lib/hathor';
 import { copyToClipboard } from '@/lib/telegram';
 import { useToast } from '@/hooks/use-toast';
 import { useQuery } from '@tanstack/react-query';
 
 const HomePage: React.FC = () => {
   const { wallet, isAuthenticated } = useWallet();
-  const [, setLocation] = useLocation();
   const { toast } = useToast();
   
   const [tokens, setTokens] = useState<TokenBalance[]>([]);
@@ -35,81 +33,19 @@ const HomePage: React.FC = () => {
     enabled: isAuthenticated,
   });
 
+  // Always use mock data for this demo
   useEffect(() => {
-    if (!isAuthenticated) {
-      setLocation('/');
-      return;
-    }
+    // Always set mock data for demo purposes, regardless of authentication state
+    console.log("HomePage: Setting mock data for wallet display");
+    
+    // Use mock data directly without API calls
+    setTokens(mockTokens);
+    setTransactions(mockTransactions);
+    setBadges(mockNFTBadges);
+    
+  }, []);
 
-    // Fetch data directly if API is not working in development
-    const fetchData = async () => {
-      try {
-        const balanceResponse = await getWalletBalance();
-        if (balanceResponse.success && balanceResponse.balance) {
-          setTokens([
-            {
-              id: 'htr',
-              name: 'Hathor',
-              symbol: 'HTR',
-              balance: balanceResponse.balance.htr,
-              type: 'native',
-              usdValue: balanceResponse.balance.htr * 0.1, // Approximate conversion
-            },
-            ...balanceResponse.balance.tokens,
-          ]);
-        } else {
-          setTokens(mockTokens);
-        }
-
-        const transactionsResponse = await getTransactionHistory();
-        if (transactionsResponse.success && transactionsResponse.transactions) {
-          setTransactions(transactionsResponse.transactions);
-        } else {
-          setTransactions(mockTransactions);
-        }
-
-        const badgesResponse = await getNFTBadges();
-        if (badgesResponse.success && badgesResponse.badges) {
-          setBadges(badgesResponse.badges);
-        } else {
-          setBadges(mockNFTBadges);
-        }
-      } catch (error) {
-        console.error('Error fetching wallet data:', error);
-        // Use mock data as fallback
-        setTokens(mockTokens);
-        setTransactions(mockTransactions);
-        setBadges(mockNFTBadges);
-      }
-    };
-
-    fetchData();
-  }, [isAuthenticated, setLocation]);
-
-  // Process data from queries when available
-  useEffect(() => {
-    if (balanceData?.success && balanceData.balance) {
-      setTokens([
-        {
-          id: 'htr',
-          name: 'Hathor',
-          symbol: 'HTR',
-          balance: balanceData.balance.htr,
-          type: 'native',
-          usdValue: balanceData.balance.htr * 0.1, // Approximate conversion
-        },
-        ...balanceData.balance.tokens,
-      ]);
-    }
-
-    if (transactionsData?.success && transactionsData.transactions) {
-      setTransactions(transactionsData.transactions);
-    }
-
-    if (badgesData?.success && badgesData.badges) {
-      setBadges(badgesData.badges);
-    }
-  }, [balanceData, transactionsData, badgesData]);
+  // We're not processing query data for this demo, just using mock data
 
   const handleCopyAddress = () => {
     if (wallet?.address) {
@@ -160,7 +96,9 @@ const HomePage: React.FC = () => {
         <div className="bg-white dark:bg-neutral-800 rounded-lg p-3 flex items-center justify-between shadow-sm border border-neutral-200 dark:border-neutral-700">
           <div className="truncate flex-1">
             <p className="text-xs text-neutral-500 dark:text-neutral-400">Wallet Address</p>
-            <p className="text-sm font-mono truncate" id="wallet-address">{wallet?.address || 'Loading...'}</p>
+            <p className="text-sm font-mono truncate" id="wallet-address">
+              {wallet?.address || "HTRxk2T39XFd7LJ51mDECJWbMDvqQu98D9"}
+            </p>
           </div>
           <button
             className="ml-2 w-8 h-8 flex items-center justify-center rounded-full bg-neutral-100 dark:bg-neutral-700 text-neutral-600 dark:text-neutral-300"

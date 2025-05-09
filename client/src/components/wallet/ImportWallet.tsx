@@ -38,14 +38,11 @@ const ImportWallet: React.FC<ImportWalletProps> = ({ onBack }) => {
     
     try {
       // Call importWallet and await the result
-      const result = await importWallet(seedPhrase, pin);
-      console.log("Wallet import complete, navigating to home page");
+      await importWallet(seedPhrase, pin);
       
-      // Use a longer timeout to ensure state changes are processed
-      setTimeout(() => {
-        window.history.pushState({}, '', '/home');
-        setLocation('/home');
-      }, 2000);
+      // Force redirect to home page immediately
+      console.log("Wallet import complete, directly navigating to HomePage");
+      window.location.href = '/home';
     } catch (error) {
       console.error("Error in handleImportWallet:", error);
     }

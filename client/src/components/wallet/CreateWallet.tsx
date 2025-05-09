@@ -26,14 +26,11 @@ const CreateWallet: React.FC<CreateWalletProps> = ({ onBack }) => {
     
     try {
       // Call createWallet and wait for the promise to resolve
-      const result = await createWallet(pin);
-      console.log("Wallet creation complete, navigating to home page");
+      await createWallet(pin);
       
-      // Use a longer timeout to ensure state changes are processed
-      setTimeout(() => {
-        window.history.pushState({}, '', '/home');
-        setLocation('/home');
-      }, 2000);
+      // Force redirect to home page immediately
+      console.log("Wallet creation complete, directly navigating to HomePage");
+      window.location.href = '/home';
     } catch (error) {
       console.error("Error in handleCreateWallet:", error);
     }
