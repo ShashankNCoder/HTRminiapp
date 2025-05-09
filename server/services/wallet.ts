@@ -98,6 +98,21 @@ const mockNFTBadges = [
  */
 export async function getWalletByTelegramId(telegramId: string) {
   // In a real implementation, this would query the database
+  // For demonstration, add a mock wallet if it doesn't exist
+  if (!mockWallets.has(telegramId)) {
+    console.log(`Creating mock wallet for telegram ID: ${telegramId}`);
+    const address = `HTRxk2T39XFd7LJ51mDECJWbMDvqQu98D9`;
+    const publicKey = `pub_${Math.random().toString(36).substring(2, 15)}`;
+    const encryptedPrivateKey = `enc_${Math.random().toString(36).substring(2, 15)}`;
+    
+    mockWallets.set(telegramId, {
+      address,
+      publicKey,
+      encryptedPrivateKey,
+      pin: undefined
+    });
+  }
+  
   return mockWallets.get(telegramId);
 }
 

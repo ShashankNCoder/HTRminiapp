@@ -14,6 +14,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // For now, we'll use a mock ID
       const telegramId = req.query.telegram_id || "123456789";
       
+      // Simulate that a wallet exists for demo
+      // In a real implementation, we'd query the database
+      
+      if (process.env.DEMO_MODE === 'true') {
+        res.json({
+          exists: true,
+          address: "HTRxk2T39XFd7LJ51mDECJWbMDvqQu98D9"
+        });
+        return;
+      }
+      
       const wallet = await walletService.getWalletByTelegramId(telegramId.toString());
       
       res.json({
