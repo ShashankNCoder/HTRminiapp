@@ -68,22 +68,47 @@ export async function setupVite(app: Express, server: Server) {
 }
 
 export function serveStatic(app: Express) {
-  const distPath = path.resolve(process.cwd(), "dist", "public");
+  // Try multiple possible build output locations
+  const possiblePaths = [
+    path.resolve(process.cwd(), "dist", "public"),
+    path.resolve(process.cwd(), "dist"),
+    path.resolve(process.cwd(), "build"),
+    path.resolve(process.cwd(), "client", "dist")
+  ];
 
-  if (!fs.existsSync(distPath)) {
-    throw new Error(
-      `Could not find the build directory: ${distPath}, make sure to run 'npm run build' first`,
-    );
+  let distPath = possiblePaths[0]; // Default to first path
+  for (const p of possiblePaths) {
+    if (fs.existsSync(p)) {
+      distPath = p;
+      break;
+    }
   }
 
-  // Serve static files from the dist/public directory
-  app.use(express.static(distPath, {
-    index: false, // Don't serve index.html for directory requests
-    maxAge: '1y', // Cache static assets for 1 year
-  }));
+  // If no build directory found, try to serve from client directory as fallback
+  if (!fs.existsSync(distPath)) {
+    const clientPath = path.resolve(process.cwd(), "client");
+    if (fs.existsSync(clientPath)) {
+      distPath = clientPath;
+      log("Warning: Serving from client directory as fallback. Run 'npm run build' for production.");
+    } else {
+      throw new Error(
+        "Could not find any build directory. Make sure to run 'npm run build' first."
+      );
+    }
+  }
 
-  // Serve index.html for all routes (SPA fallback)
+  log(`Serving static files from: ${distPath}`);
+
+  // Serve static files
+  app.use(express.static(distPath));
+
+  // Serve index.html for all routes
   app.get("*", (_req, res) => {
-    res.sendFile(path.join(distPath, "index.html"));
+    const indexPath = path.join(distPath, "index.html");
+    if (fs.existsSync(indexPath)) {
+      res.sendFile(indexPath);
+    } else {
+      res.status(404).send("Not found");
+    }
   });
 }
