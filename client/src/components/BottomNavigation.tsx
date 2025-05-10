@@ -10,10 +10,10 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onCreate
   const [, setLocation] = useLocation();
 
   return (
-    <nav className="py-1">
-      <div className="flex justify-around">
+    <nav className="py-1 bg-white">
+      <div className="flex justify-around items-center max-w-md mx-auto">
         <button 
-          className="flex flex-col items-center px-2 py-1"
+          className="flex flex-col items-center px-2 py-1 w-1/5"
           onClick={() => setLocation("/home")}
         >
           <svg 
@@ -28,7 +28,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onCreate
         </button>
         
         <button 
-          className="flex flex-col items-center px-2 py-1"
+          className="flex flex-col items-center px-2 py-1 w-1/5"
           onClick={() => setLocation("/wallet")}
         >
           <svg 
@@ -44,7 +44,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onCreate
         </button>
         
         <button 
-          className="flex flex-col items-center px-2 py-1"
+          className="flex flex-col items-center px-2 py-1 w-1/5"
           onClick={onCreateClick}
         >
           <div className="bg-[#2aabee] rounded-full p-2 -mt-4 shadow-md">
@@ -55,7 +55,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onCreate
         </button>
         
         <button 
-          className="flex flex-col items-center px-2 py-1"
+          className="flex flex-col items-center px-2 py-1 w-1/5"
           onClick={() => setLocation("/rewards")}
         >
           <svg 
@@ -71,7 +71,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onCreate
         </button>
         
         <button 
-          className="flex flex-col items-center px-2 py-1"
+          className="flex flex-col items-center px-2 py-1 w-1/5"
           onClick={() => setLocation("/profile")}
         >
           <svg 

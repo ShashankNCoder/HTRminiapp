@@ -19,6 +19,18 @@ import BottomNavigation from "@/components/BottomNavigation";
 function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const { isAuthenticated } = useWallet();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const getActiveTab = () => {
     if (location === "/home") return "home";
@@ -40,12 +52,14 @@ function Layout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 pb-20">
         {children}
       </main>
-      <div className="fixed bottom-0 left-0 right-0 z-50">
-        <BottomNavigation 
-          activeTab={getActiveTab()} 
-          onCreateClick={handleCreateClick}
-        />
-      </div>
+      {isMobile && (
+        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200">
+          <BottomNavigation 
+            activeTab={getActiveTab()} 
+            onCreateClick={handleCreateClick}
+          />
+        </div>
+      )}
     </div>
   );
 }
@@ -54,22 +68,6 @@ function Router() {
   const { isAuthenticated } = useWallet();
   const [location, setLocation] = useLocation();
   const [isInitialLoad, setIsInitialLoad] = useState(true);
-
-  // Enhanced routing logic to better handle authentication state
-  useEffect(() => {
-    console.log("Router: Authentication state changed:", isAuthenticated, "Current location:", location);
-    
-    // Only handle routing after initial load
-    if (!isInitialLoad) {
-      if (isAuthenticated && location === "/") {
-        console.log("Router: User is authenticated and at root, redirecting to /home");
-        setLocation("/home");
-      } else if (!isAuthenticated && location !== "/") {
-        console.log("Router: User is not authenticated, redirecting to root");
-        setLocation("/");
-      }
-    }
-  }, [isAuthenticated, location, setLocation, isInitialLoad]);
 
   // Handle initial load
   useEffect(() => {
@@ -86,6 +84,17 @@ function Router() {
     
     setIsInitialLoad(false);
   }, [isAuthenticated, setLocation]);
+
+  // Handle subsequent route changes
+  useEffect(() => {
+    if (!isInitialLoad) {
+      if (isAuthenticated && location === "/") {
+        setLocation("/home");
+      } else if (!isAuthenticated && location !== "/") {
+        setLocation("/");
+      }
+    }
+  }, [isAuthenticated, location, setLocation, isInitialLoad]);
 
   return (
     <Layout>
