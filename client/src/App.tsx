@@ -74,11 +74,12 @@ function Router() {
     const path = window.location.pathname;
     console.log("Initial path:", path);
 
+    // Only redirect if we're at the root path
     if (path === "/" || path === "/index.html") {
-      if (isAuthenticated) {
-        setLocation("/home");
-      } else {
+      if (!isAuthenticated) {
         setLocation("/");
+      } else {
+        setLocation("/home");
       }
     }
     
@@ -88,9 +89,12 @@ function Router() {
   // Handle subsequent route changes
   useEffect(() => {
     if (!isInitialLoad) {
-      if (isAuthenticated && location === "/") {
+      // If not authenticated, only allow access to root path
+      if (!isAuthenticated && location !== "/") {
         setLocation("/");
-      } else if (!isAuthenticated && location !== "/") {
+      }
+      // If authenticated and at root, redirect to home
+      else if (isAuthenticated && location === "/") {
         setLocation("/home");
       }
     }
