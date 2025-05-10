@@ -1,7 +1,6 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
-import path from "path";
 
 // Set demo mode flag for development - currently turned off to allow wallet creation testing
 process.env.DEMO_MODE = process.env.DEMO_MODE || 'false';
@@ -9,14 +8,6 @@ process.env.DEMO_MODE = process.env.DEMO_MODE || 'false';
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-// Add security headers
-app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('X-Frame-Options', 'DENY');
-  res.setHeader('X-XSS-Protection', '1; mode=block');
-  next();
-});
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -59,36 +50,20 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  const isDevelopment = process.env.NODE_ENV !== 'production';
-  
-  if (isDevelopment) {
+  // importantly only setup vite in development and after
+  // setting up all the other routes so the catch-all route
+  // doesn't interfere with the other routes
+  if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
-    // In production, serve static files from the dist/public directory
-    const publicPath = path.resolve(process.cwd(), 'dist', 'public');
-    
-    // Serve static files
-    app.use(express.static(publicPath, {
-      index: false,
-      maxAge: '1y',
-      etag: true,
-      lastModified: true,
-    }));
-    
-    // Serve index.html for all routes (SPA fallback)
-    app.get('*', (req, res) => {
-      // Don't serve index.html for API routes
-      if (req.path.startsWith('/api')) {
-        res.status(404).json({ error: 'Not found' });
-        return;
-      }
-      
-      res.sendFile(path.join(publicPath, 'index.html'));
-    });
+    serveStatic(app);
   }
 
-  const port = process.env.PORT || 5000;
+  // ALWAYS serve the app on port 5000
+  // this serves both the API and the client.
+  // It is the only port that is not firewalled.
+  const port = 5000;
   server.listen(port, () => {
-    log(`Server running in ${isDevelopment ? 'development' : 'production'} mode on port ${port}`);
+    log(`serving on port ${port}`);
   });
 })();
