@@ -89,9 +89,9 @@ function Router() {
   useEffect(() => {
     if (!isInitialLoad) {
       if (isAuthenticated && location === "/") {
-        setLocation("/home");
-      } else if (!isAuthenticated && location !== "/") {
         setLocation("/");
+      } else if (!isAuthenticated && location !== "/") {
+        setLocation("/home");
       }
     }
   }, [isAuthenticated, location, setLocation, isInitialLoad]);
