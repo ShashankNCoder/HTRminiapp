@@ -1,6 +1,2 @@
 # Python Dependencies
-drizzle-orm==0.39.1
-passport==0.7.0
-passport-local==1.0.0
-express-session==1.18.1
-ws==8.18.0
+drizzle-orm==0.29.1
