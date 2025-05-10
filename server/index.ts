@@ -1,11 +1,7 @@
 import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes.js";
-import { setupVite, serveStatic, log } from "./vite.js";
+import { registerRoutes } from "./routes";
+import { setupVite, serveStatic, log } from "./vite";
 import path from "path";
-import { fileURLToPath } from "url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Set demo mode flag for development - currently turned off to allow wallet creation testing
 process.env.DEMO_MODE = process.env.DEMO_MODE || 'false';
@@ -55,23 +51,23 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  if (process.env.NODE_ENV === "development") {
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+  
+  if (isDevelopment) {
     await setupVite(app, server);
   } else {
-    // Serve static files from the dist/public directory
-    const staticPath = path.join(__dirname, "..", "dist", "public");
-    app.use(express.static(staticPath));
+    // In production, serve static files from the dist/public directory
+    const publicPath = path.resolve(process.cwd(), 'dist/public');
+    app.use(express.static(publicPath));
     
-    // Handle SPA routing by serving index.html for all non-API routes
-    app.get("*", (req, res) => {
-      if (!req.path.startsWith("/api")) {
-        res.sendFile(path.join(staticPath, "index.html"));
-      }
+    // Serve index.html for all routes in production (SPA fallback)
+    app.get('*', (req, res) => {
+      res.sendFile(path.join(publicPath, 'index.html'));
     });
   }
 
   const port = process.env.PORT || 5000;
   server.listen(port, () => {
-    log(`serving on port ${port}`);
+    log(`Server running in ${isDevelopment ? 'development' : 'production'} mode on port ${port}`);
   });
 })();

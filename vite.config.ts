@@ -15,15 +15,14 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
-    sourcemap: false,
-    minify: true,
-    rollupOptions: {
-      output: {
-        manualChunks: undefined,
-      },
-    },
+    sourcemap: true,
   },
   server: {
-    port: 3000,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+    },
   },
 });
