@@ -19,18 +19,6 @@ import BottomNavigation from "@/components/BottomNavigation";
 function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const { isAuthenticated } = useWallet();
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
-    };
-    
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
 
   const getActiveTab = () => {
     if (location === "/home") return "home";
@@ -52,14 +40,12 @@ function Layout({ children }: { children: React.ReactNode }) {
       <main className="flex-1 pb-20">
         {children}
       </main>
-      {isMobile && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200">
-          <BottomNavigation 
-            activeTab={getActiveTab()} 
-            onCreateClick={handleCreateClick}
-          />
-        </div>
-      )}
+      <div className="fixed bottom-0 left-0 right-0 z-50">
+        <BottomNavigation 
+          activeTab={getActiveTab()} 
+          onCreateClick={handleCreateClick}
+        />
+      </div>
     </div>
   );
 }
@@ -67,38 +53,18 @@ function Layout({ children }: { children: React.ReactNode }) {
 function Router() {
   const { isAuthenticated } = useWallet();
   const [location, setLocation] = useLocation();
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
-  // Handle initial load
+  // Enhanced routing logic to better handle authentication state
   useEffect(() => {
-    const path = window.location.pathname;
-    console.log("Initial path:", path);
-
-    // Only redirect if we're at the root path
-    if (path === "/" || path === "/index.html") {
-      if (!isAuthenticated) {
-        setLocation("/");
-      } else {
-        setLocation("/home");
-      }
-    }
+    console.log("Router: Authentication state changed:", isAuthenticated, "Current location:", location);
     
-    setIsInitialLoad(false);
-  }, [isAuthenticated, setLocation]);
-
-  // Handle subsequent route changes
-  useEffect(() => {
-    if (!isInitialLoad) {
-      // If not authenticated, only allow access to root path
-      if (!isAuthenticated && location !== "/") {
-        setLocation("/");
-      }
-      // If authenticated and at root, redirect to home
-      else if (isAuthenticated && location === "/") {
-        setLocation("/home");
-      }
+    if (isAuthenticated && location === "/") {
+      console.log("Router: User is authenticated and at root, redirecting to /home");
+      // Use both methods to ensure navigation works
+      window.history.pushState({}, '', '/home');
+      setLocation("/home");
     }
-  }, [isAuthenticated, location, setLocation, isInitialLoad]);
+  }, [isAuthenticated, location, setLocation]);
 
   return (
     <Layout>
