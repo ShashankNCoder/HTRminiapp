@@ -42,7 +42,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error checking wallet existence:", error);
       res.status(500).json({
         success: false,
-        error: "Failed to check wallet existence"
+        error: "Failed to check wallet existence",
+        details: error instanceof Error ? error.message : String(error)
       });
     }
   });
@@ -71,7 +72,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error creating wallet:", error);
       res.status(500).json({
         success: false,
-        error: "Failed to create wallet"
+        error: "Failed to create wallet",
+        details: error instanceof Error ? error.message : String(error)
       });
     }
   });
@@ -101,7 +103,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error importing wallet:", error);
       res.status(500).json({
         success: false,
-        error: "Failed to import wallet"
+        error: "Failed to import wallet",
+        details: error instanceof Error ? error.message : String(error)
       });
     }
   });
@@ -123,7 +126,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error getting wallet balance:", error);
       res.status(500).json({
         success: false,
-        error: "Failed to get wallet balance"
+        error: "Failed to get wallet balance",
+        details: error instanceof Error ? error.message : String(error)
       });
     }
   });
@@ -145,7 +149,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error getting transaction history:", error);
       res.status(500).json({
         success: false,
-        error: "Failed to get transaction history"
+        error: "Failed to get transaction history",
+        details: error instanceof Error ? error.message : String(error)
       });
     }
   });
@@ -167,7 +172,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error getting NFT badges:", error);
       res.status(500).json({
         success: false,
-        error: "Failed to get NFT badges"
+        error: "Failed to get NFT badges",
+        details: error instanceof Error ? error.message : String(error)
       });
     }
   });
@@ -199,7 +205,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error creating token:", error);
       res.status(500).json({
         success: false,
-        error: "Failed to create token"
+        error: "Failed to create token",
+        details: error instanceof Error ? error.message : String(error)
       });
     }
   });
@@ -230,7 +237,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error sending tokens:", error);
       res.status(500).json({
         success: false,
-        error: "Failed to send tokens"
+        error: "Failed to send tokens",
+        details: error instanceof Error ? error.message : String(error)
       });
     }
   });
