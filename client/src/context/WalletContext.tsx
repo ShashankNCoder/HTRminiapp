@@ -58,8 +58,8 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
       }
     };
 
-    // Uncomment this to enable auto-login with mock wallet for demo
-    // checkAuth();
+    // Enable auto-login with mock wallet for demo
+    checkAuth();
   }, []);
 
   const createWallet = async (pin?: string): Promise<{ success: boolean } | undefined> => {

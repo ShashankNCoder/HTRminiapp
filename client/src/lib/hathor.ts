@@ -274,7 +274,7 @@ export const mockNFTBadges: NFTBadge[] = [
   {
     id: 'badge2',
     name: 'Top Tipper',
-    imageUrl: 'https://pixabay.com/get/gbd5a6ce4c282aeabd242812b757af66bf31ecc9ae360c138d56b3507d69c2f4fd51c6b5d04c52c6906b3162295df7eb5eed4bd0252090fa0851824d38c80dca4_1280.jpg',
+    imageUrl: 'https://www.lgt.com/resource/image/30772/landscape_ratio3x2/972/648/d5af612d9764815ee70802081836b5ef/27499101CE9538EE9A0754E5ADECC2D0/22-246-bored-ape-nft-en.webp',
     isLocked: false,
     earnedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
   },

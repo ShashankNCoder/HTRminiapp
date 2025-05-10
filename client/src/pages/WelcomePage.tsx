@@ -5,6 +5,7 @@ import CreateWallet from '@/components/wallet/CreateWallet';
 import ImportWallet from '@/components/wallet/ImportWallet';
 import CreatingWallet from '@/components/wallet/CreatingWallet';
 import { checkWalletExists } from '@/lib/hathor';
+import logo from '@/assets/logo.png';  // Add this import at the top
 
 enum WelcomeScreenState {
   START,
@@ -42,20 +43,11 @@ const WelcomePage: React.FC = () => {
           <div className="flex flex-col h-full items-center justify-center p-6">
             <div className="flex-1 flex flex-col items-center justify-center">
               <div className="w-40 h-40 rounded-full overflow-hidden mb-8 bg-hathor-purple/10 flex items-center justify-center">
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="1.5" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round" 
-                  className="w-24 h-24 text-hathor-purple"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
-                  <path d="M12 18V6" />
-                </svg>
+                <img 
+                  src={logo}
+                  alt="Hathor Logo"
+                  className="w-24 h-24"
+                />
               </div>
               
               <h1 className="text-2xl font-bold mb-2 text-center">Welcome to HathorChat</h1>

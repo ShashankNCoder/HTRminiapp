@@ -35,6 +35,11 @@ export interface TokenBalance {
   lastUpdated: Date;
 }
 
+export interface TokenWithBalance extends Token {
+  balance: number;
+  lastUpdated: Date;
+}
+
 export interface BadgeMetadata {
   id: string;
   name: string;
