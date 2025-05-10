@@ -13,7 +13,11 @@
     "paths": {
       "@/*": ["client/src/*"],
       "@shared/*": ["shared/*"]
-    }
+    },
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": false
   },
   "include": ["server/**/*"],
   "exclude": ["node_modules", "dist", "build"]

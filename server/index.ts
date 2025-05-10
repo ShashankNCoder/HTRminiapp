@@ -1,19 +1,20 @@
 import express, { type Request, Response, NextFunction } from "express";
-import { registerRoutes } from "./routes";
+import { registerRoutes } from "./routes.js";
+import { setupVite, serveStatic, log } from "./vite.js";
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const app = express();
+// Set demo mode flag for development - currently turned off to allow wallet creation testing
+process.env.DEMO_MODE = process.env.DEMO_MODE || 'false';
 
-// Basic middleware
+const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// API routes
-app.use("/api", (req, res, next) => {
+app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
@@ -31,33 +32,46 @@ app.use("/api", (req, res, next) => {
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
-      console.log(logLine);
+
+      if (logLine.length > 80) {
+        logLine = logLine.slice(0, 79) + "…";
+      }
+
+      log(logLine);
     }
   });
 
   next();
 });
 
-// Register API routes
-registerRoutes(app);
+(async () => {
+  const server = await registerRoutes(app);
 
-// Serve static files
-app.use("/static", express.static(path.join(__dirname, "..", "build", "static")));
+  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+    const status = err.status || err.statusCode || 500;
+    const message = err.message || "Internal Server Error";
 
-// Serve index.html for all other routes
-app.get("*", (_req, res) => {
-  res.sendFile(path.join(__dirname, "..", "build", "index.html"));
-});
+    res.status(status).json({ message });
+    throw err;
+  });
 
-// Error handling middleware
-app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-  console.error(err);
-  const status = err.status || err.statusCode || 500;
-  const message = err.message || "Internal Server Error";
-  res.status(status).json({ message });
-});
+  if (process.env.NODE_ENV === "development") {
+    await setupVite(app, server);
+  } else {
+    // Serve static files from the dist/public directory
+    const staticPath = path.join(__dirname, "..", "dist", "public");
+    app.use(express.static(staticPath));
+    
+    // Handle SPA routing by serving index.html for all non-API routes
+    app.get("*", (req, res) => {
+      if (!req.path.startsWith("/api")) {
+        res.sendFile(path.join(staticPath, "index.html"));
+      }
+    });
+  }
 
-const port = process.env.PORT || 5000;
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-});
+  const port = process.env.PORT || 5000;
+  server.listen(port, () => {
+    log(`serving on port ${port}`);
+  });
+})();
