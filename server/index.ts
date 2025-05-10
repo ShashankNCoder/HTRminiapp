@@ -7,6 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -39,17 +41,17 @@ app.use("/api", (req, res, next) => {
 // Register API routes
 registerRoutes(app);
 
-// Serve static files from the dist/public directory
-const staticPath = path.join(__dirname, "..", "dist", "public");
-app.use(express.static(staticPath));
+// Serve static files
+app.use("/static", express.static(path.join(__dirname, "..", "build", "static")));
 
-// Handle all other routes by serving index.html
+// Serve index.html for all other routes
 app.get("*", (_req, res) => {
-  res.sendFile(path.join(staticPath, "index.html"));
+  res.sendFile(path.join(__dirname, "..", "build", "index.html"));
 });
 
 // Error handling middleware
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  console.error(err);
   const status = err.status || err.statusCode || 500;
   const message = err.message || "Internal Server Error";
   res.status(status).json({ message });
