@@ -1,2 +1,0 @@
-# Python Dependencies
-drizzle-orm==0.29.1
