@@ -10,6 +10,14 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// Add security headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  next();
+});
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
@@ -57,11 +65,24 @@ app.use((req, res, next) => {
     await setupVite(app, server);
   } else {
     // In production, serve static files from the dist/public directory
-    const publicPath = path.resolve(process.cwd(), 'dist/public');
-    app.use(express.static(publicPath));
+    const publicPath = path.resolve(process.cwd(), 'dist', 'public');
     
-    // Serve index.html for all routes in production (SPA fallback)
+    // Serve static files
+    app.use(express.static(publicPath, {
+      index: false,
+      maxAge: '1y',
+      etag: true,
+      lastModified: true,
+    }));
+    
+    // Serve index.html for all routes (SPA fallback)
     app.get('*', (req, res) => {
+      // Don't serve index.html for API routes
+      if (req.path.startsWith('/api')) {
+        res.status(404).json({ error: 'Not found' });
+        return;
+      }
+      
       res.sendFile(path.join(publicPath, 'index.html'));
     });
   }
