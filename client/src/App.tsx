@@ -53,18 +53,39 @@ function Layout({ children }: { children: React.ReactNode }) {
 function Router() {
   const { isAuthenticated } = useWallet();
   const [location, setLocation] = useLocation();
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   // Enhanced routing logic to better handle authentication state
   useEffect(() => {
     console.log("Router: Authentication state changed:", isAuthenticated, "Current location:", location);
     
-    if (isAuthenticated && location === "/") {
-      console.log("Router: User is authenticated and at root, redirecting to /home");
-      // Use both methods to ensure navigation works
-      window.history.pushState({}, '', '/home');
-      setLocation("/home");
+    // Only handle routing after initial load
+    if (!isInitialLoad) {
+      if (isAuthenticated && location === "/") {
+        console.log("Router: User is authenticated and at root, redirecting to /home");
+        setLocation("/home");
+      } else if (!isAuthenticated && location !== "/") {
+        console.log("Router: User is not authenticated, redirecting to root");
+        setLocation("/");
+      }
     }
-  }, [isAuthenticated, location, setLocation]);
+  }, [isAuthenticated, location, setLocation, isInitialLoad]);
+
+  // Handle initial load
+  useEffect(() => {
+    const path = window.location.pathname;
+    console.log("Initial path:", path);
+
+    if (path === "/" || path === "/index.html") {
+      if (isAuthenticated) {
+        setLocation("/home");
+      } else {
+        setLocation("/");
+      }
+    }
+    
+    setIsInitialLoad(false);
+  }, [isAuthenticated, setLocation]);
 
   return (
     <Layout>
