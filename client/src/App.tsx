@@ -14,38 +14,18 @@ import CreateTokenPage from "@/pages/CreateTokenPage";
 import LoadingScreen from "@/components/LoadingScreen";
 import { useWallet } from "@/context/WalletContext";
 import { initTelegramApp } from "@/lib/telegram";
-import BottomNavigation from "@/components/BottomNavigation";
 
 function Layout({ children }: { children: React.ReactNode }) {
   const [location] = useLocation();
   const { isAuthenticated } = useWallet();
 
-  const getActiveTab = () => {
-    if (location === "/home") return "home";
-    if (location === "/wallet") return "wallet";
-    if (location === "/rewards") return "rewards";
-    if (location === "/profile") return "profile";
-    return "home";
-  };
-
-  const handleCreateClick = () => {
-    // Handle create action
-    console.log("Create button clicked");
-  };
-
   if (!isAuthenticated) return <>{children}</>;
 
   return (
     <div className="relative min-h-screen flex flex-col">
-      <main className="flex-1 pb-20">
+      <main className="flex-1 pt-14 pb-16">
         {children}
       </main>
-      <div className="fixed bottom-0 left-0 right-0 z-50">
-        <BottomNavigation 
-          activeTab={getActiveTab()} 
-          onCreateClick={handleCreateClick}
-        />
-      </div>
     </div>
   );
 }
@@ -54,15 +34,11 @@ function Router() {
   const { isAuthenticated } = useWallet();
   const [location, setLocation] = useLocation();
 
-  // Enhanced routing logic to better handle authentication state
+  // Only redirect if user is authenticated and explicitly on root path
   useEffect(() => {
-    console.log("Router: Authentication state changed:", isAuthenticated, "Current location:", location);
-    
     if (isAuthenticated && location === "/") {
       console.log("Router: User is authenticated and at root, redirecting to /home");
-      // Use both methods to ensure navigation works
-      window.history.pushState({}, '', '/home');
-      setLocation("/home");
+      setLocation("/", { replace: true });
     }
   }, [isAuthenticated, location, setLocation]);
 

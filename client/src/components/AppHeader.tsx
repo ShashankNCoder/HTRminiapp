@@ -10,18 +10,18 @@ const AppHeader: React.FC<AppHeaderProps> = ({ title, showBackButton = false }) 
   const router = useRouter();
 
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 shadow-sm">
+      <div className="w-full px-4">
+        <div className="flex justify-between items-center h-14">
           <div className="flex items-center">
             {showBackButton && (
               <button
                 onClick={() => router.back()}
-                className="mr-4 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
+                className="mr-2 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6 text-gray-500 dark:text-gray-400"
+                  className="h-5 w-5 text-gray-500 dark:text-gray-400"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -35,7 +35,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ title, showBackButton = false }) 
                 </svg>
               </button>
             )}
-            <h1 className="text-lg font-semibold text-gray-900 dark:text-white">
+            <h1 className="text-base font-medium text-gray-900 dark:text-white">
               {title}
             </h1>
           </div>

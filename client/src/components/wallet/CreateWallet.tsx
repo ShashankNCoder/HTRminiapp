@@ -39,7 +39,7 @@ const CreateWallet: React.FC<CreateWalletProps> = ({ onBack }) => {
   return (
     <div className="flex flex-col h-full items-center justify-center p-6">
       <div className="flex-1 flex flex-col items-center justify-center w-full max-w-xs">
-        <div className="w-48 h-48 mb-6 flex items-center justify-center">
+        <div className="w-40 h-40 mb-6 flex items-center justify-center">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"

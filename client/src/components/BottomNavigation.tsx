@@ -10,10 +10,10 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onCreate
   const [, setLocation] = useLocation();
 
   return (
-    <nav className="py-1">
-      <div className="flex justify-around">
+    <nav className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+      <div className="flex justify-around items-center h-16">
         <button 
-          className="flex flex-col items-center px-2 py-1"
+          className="flex flex-col items-center justify-center w-full h-full"
           onClick={() => setLocation("/home")}
         >
           <svg 
@@ -28,7 +28,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onCreate
         </button>
         
         <button 
-          className="flex flex-col items-center px-2 py-1"
+          className="flex flex-col items-center justify-center w-full h-full"
           onClick={() => setLocation("/wallet")}
         >
           <svg 
@@ -44,7 +44,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onCreate
         </button>
         
         <button 
-          className="flex flex-col items-center px-2 py-1"
+          className="flex flex-col items-center justify-center w-full h-full"
           onClick={onCreateClick}
         >
           <div className="bg-[#2aabee] rounded-full p-2 -mt-4 shadow-md">
@@ -55,7 +55,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onCreate
         </button>
         
         <button 
-          className="flex flex-col items-center px-2 py-1"
+          className="flex flex-col items-center justify-center w-full h-full"
           onClick={() => setLocation("/rewards")}
         >
           <svg 
@@ -71,7 +71,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ activeTab, onCreate
         </button>
         
         <button 
-          className="flex flex-col items-center px-2 py-1"
+          className="flex flex-col items-center justify-center w-full h-full"
           onClick={() => setLocation("/profile")}
         >
           <svg 
